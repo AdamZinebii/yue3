@@ -1,7 +1,11 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xcodec_mini_infer'))
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xcodec_mini_infer', 'descriptaudiocodec'))
+
+# Get the directory where this script is located (works on any system)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(os.path.join(SCRIPT_DIR, 'xcodec_mini_infer'))
+sys.path.append(os.path.join(SCRIPT_DIR, 'xcodec_mini_infer', 'descriptaudiocodec'))
 import re
 import random
 import uuid
@@ -49,11 +53,11 @@ parser.add_argument("--disable_offload_model", action="store_true", help="If set
 parser.add_argument("--cuda_idx", type=int, default=0)
 parser.add_argument("--seed", type=int, default=42, help="An integer value to reproduce generation.")
 # Config for xcodec and upsampler
-parser.add_argument('--basic_model_config', default='./xcodec_mini_infer/final_ckpt/config.yaml', help='YAML files for xcodec configurations.')
-parser.add_argument('--resume_path', default='./xcodec_mini_infer/final_ckpt/ckpt_00360000.pth', help='Path to the xcodec checkpoint.')
-parser.add_argument('--config_path', type=str, default='./xcodec_mini_infer/decoders/config.yaml', help='Path to Vocos config file.')
-parser.add_argument('--vocal_decoder_path', type=str, default='./xcodec_mini_infer/decoders/decoder_131000.pth', help='Path to Vocos decoder weights.')
-parser.add_argument('--inst_decoder_path', type=str, default='./xcodec_mini_infer/decoders/decoder_151000.pth', help='Path to Vocos decoder weights.')
+parser.add_argument('--basic_model_config', default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/final_ckpt/config.yaml'), help='YAML files for xcodec configurations.')
+parser.add_argument('--resume_path', default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/final_ckpt/ckpt_00360000.pth'), help='Path to the xcodec checkpoint.')
+parser.add_argument('--config_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/config.yaml'), help='Path to Vocos config file.')
+parser.add_argument('--vocal_decoder_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/decoder_131000.pth'), help='Path to Vocos decoder weights.')
+parser.add_argument('--inst_decoder_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/decoder_151000.pth'), help='Path to Vocos decoder weights.')
 parser.add_argument('-r', '--rescale', action='store_true', help='Rescale output to avoid clipping.')
 
 
@@ -80,7 +84,7 @@ def seed_everything(seed=42):
 seed_everything(args.seed)
 # load tokenizer and model
 device = torch.device(f"cuda:{cuda_idx}" if torch.cuda.is_available() else "cpu")
-mmtokenizer = _MMSentencePieceTokenizer("./mm_tokenizer_v0.2_hf/tokenizer.model")
+mmtokenizer = _MMSentencePieceTokenizer(os.path.join(SCRIPT_DIR, "mm_tokenizer_v0.2_hf/tokenizer.model"))
 model = AutoModelForCausalLM.from_pretrained(
     stage1_model, 
     torch_dtype=torch.bfloat16,
