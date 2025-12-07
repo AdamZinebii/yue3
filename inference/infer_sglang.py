@@ -467,6 +467,8 @@ def main():
             input_ids = input_ids[-max_context:]
         
         # Generate with SGLang
+        # Note: SGLang doesn't support guidance_scale directly like transformers
+        # CFG would require a different implementation approach
         sampling_params = {
             "max_new_tokens": args.max_new_tokens,
             "min_new_tokens": 100,
@@ -474,7 +476,6 @@ def main():
             "top_p": top_p,
             "repetition_penalty": repetition_penalty,
             "stop_token_ids": [mmtokenizer.eoa],
-            "guidance_scale": guidance_scale,
             "custom_params": {
                 "blocked_ranges": [(0, 32002), (32016, 32017)]
             }
