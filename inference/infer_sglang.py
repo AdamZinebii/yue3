@@ -10,8 +10,12 @@ Usage:
 
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xcodec_mini_infer'))
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'xcodec_mini_infer', 'descriptaudiocodec'))
+
+# Get the directory where this script is located (works on any system)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.append(os.path.join(SCRIPT_DIR, 'xcodec_mini_infer'))
+sys.path.append(os.path.join(SCRIPT_DIR, 'xcodec_mini_infer', 'descriptaudiocodec'))
 
 import re
 import random
@@ -134,15 +138,15 @@ parser.add_argument("--seed", type=int, default=42,
                     help="Random seed for reproducibility")
 
 # Codec/Vocoder Configuration
-parser.add_argument('--basic_model_config', default='./xcodec_mini_infer/final_ckpt/config.yaml',
+parser.add_argument('--basic_model_config', default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/final_ckpt/config.yaml'),
                     help='xcodec config YAML')
-parser.add_argument('--resume_path', default='./xcodec_mini_infer/final_ckpt/ckpt_00360000.pth',
+parser.add_argument('--resume_path', default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/final_ckpt/ckpt_00360000.pth'),
                     help='xcodec checkpoint path')
-parser.add_argument('--config_path', type=str, default='./xcodec_mini_infer/decoders/config.yaml',
+parser.add_argument('--config_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/config.yaml'),
                     help='Vocos config path')
-parser.add_argument('--vocal_decoder_path', type=str, default='./xcodec_mini_infer/decoders/decoder_131000.pth',
+parser.add_argument('--vocal_decoder_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/decoder_131000.pth'),
                     help='Vocos vocal decoder weights')
-parser.add_argument('--inst_decoder_path', type=str, default='./xcodec_mini_infer/decoders/decoder_151000.pth',
+parser.add_argument('--inst_decoder_path', type=str, default=os.path.join(SCRIPT_DIR, 'xcodec_mini_infer/decoders/decoder_151000.pth'),
                     help='Vocos instrumental decoder weights')
 parser.add_argument('-r', '--rescale', action='store_true',
                     help='Rescale output to avoid clipping')
@@ -224,7 +228,7 @@ os.makedirs(stage2_output_dir, exist_ok=True)
 device = torch.device(f"cuda:{args.cuda_idx}" if torch.cuda.is_available() else "cpu")
 
 # Load tokenizer
-mmtokenizer = _MMSentencePieceTokenizer("./mm_tokenizer_v0.2_hf/tokenizer.model")
+mmtokenizer = _MMSentencePieceTokenizer(os.path.join(SCRIPT_DIR, "mm_tokenizer_v0.2_hf/tokenizer.model"))
 
 # Load codec tools
 codectool = CodecManipulator("xcodec", 0, 1)
