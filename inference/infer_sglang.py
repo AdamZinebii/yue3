@@ -389,6 +389,7 @@ def main():
     stage1_engine = sgl.Engine(
         model_path=args.stage1_model,
         dtype="bfloat16",
+        enable_custom_logit_processor=True,
     )
 
     # Load and prepare prompts
@@ -557,6 +558,7 @@ def main():
     stage2_engine = sgl.Engine(
         model_path=args.stage2_model,
         dtype="bfloat16",
+        enable_custom_logit_processor=True,
     )
 
     stage2_logit_processor = Stage2LogitProcessor()
